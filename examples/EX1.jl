@@ -1,7 +1,6 @@
 using Revise
 using AirfoilCST
 using Plots, CSV, DataFrames
-using Plotly
 
 fname = "DU89.csv" #"n0012.csv"
 NW0 = 20 #number of w0 to parametrize top and bottom
