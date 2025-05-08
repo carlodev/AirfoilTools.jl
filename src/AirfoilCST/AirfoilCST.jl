@@ -5,10 +5,13 @@ module AirfoilCST
 using LinearAlgebra
 using Optimization, OptimizationBBO
 using XLSX, CSV, DataFrames,FileIO
+using Parameters
 
+export CSTweights
+export CSTGeometry
+export AirfoilPoints
 export get_airfoil_coordinates
-export get_CST_weights
-export CST_airfoil
+export airfoil_from_cst
 
 include("ClassShapes.jl")
 include("ComputeCST.jl")

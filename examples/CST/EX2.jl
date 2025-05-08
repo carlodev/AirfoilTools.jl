@@ -1,14 +1,17 @@
 using Revise
 using AirfoilCST
+using Parameters
 using Plots, CSV, DataFrames
-using Plotly
+using LinearAlgebra
 
 fname = "DU89.csv" #"n0012.csv"
 NW0 = 20 #number of w0 to parametrize top and bottom
 N1 = 0.5
 N2 = 1.0
-x0u, x0l, y0u, y0l = get_airfoil_coordinates(joinpath(@__DIR__, fname))
-using LinearAlgebra
+
+ap0 = get_airfoil_coordinates(joinpath(@__DIR__, "..",fname))
+
+@unpack xu,xl,yu,yl = ap0
 
 function offset_ribbon(x, y, δ)
     n = length(x)
@@ -47,8 +50,8 @@ function offset_ribbon(x, y, δ)
     return (x_plus, y_plus, x_minus, y_minus)
 end
 # Concatenate upper and reversed lower coordinates (assuming airfoil is closed)
-x_all = vcat(x0u, x0l)
-y_all = vcat(y0u, y0l)
+x_all = vcat(xu, xl)
+y_all = vcat(yu, yl)
 
 # Compute offset ribbon
 δ = 0.005
@@ -70,5 +73,10 @@ function plot_airfoil_with_ribbon(x, y, x_plus, y_plus, x_minus, y_minus; δ=0.0
     plot!(aspect_ratio=:equal, xlabel="x", ylabel="y", title="Airfoil with ±δ Ribbon")
 end
 
-gr()
+
+
+
+plotly()
 plot_airfoil_with_ribbon(x_all, y_all, x_plus, y_plus, x_minus, y_minus; δ=δ)
+plot!(ap1.xu, ap1.yu, label="CST approximation",linecolor=:red)
+plot!(ap1.xl, ap1.yl, label=false, linecolor=:red)
