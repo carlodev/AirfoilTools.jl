@@ -7,7 +7,7 @@ CSTweights
     wu = CST weight of upper surface
     wl = CST weight of lower surface
 """
-mutable struct CSTweights
+struct CSTweights
     wu::Vector{Float64}
     wl::Vector{Float64}
 end
@@ -19,6 +19,24 @@ function CSTweights(n::Int64, f::Float64)
     return CSTweights(wu,wl)
 end
 
+Base.iterate(c::CSTweights, state=(1, :upper)) = _next(c, state)
+
+function _next(c::CSTweights, (i, section))
+    if section == :upper
+        if i <= length(c.wu)
+            return (("upper", c.wu[i]), (i + 1, :upper))
+        else
+            return _next(c, (1, :lower))  # move to lower
+        end
+    elseif section == :lower
+        if i <= length(c.wl)
+            return (("lower", c.wl[i]), (i + 1, :lower))
+        else
+            return nothing  # done
+        end
+    end
+end
+
 """
 CSTGeometry
 
@@ -27,11 +45,21 @@ CSTGeometry
     N1 = 1.0 and N2 = 1.0 for an elliptic airfoil
 
 """
-@with_kw mutable struct CSTGeometry
+@with_kw struct CSTGeometry
     cstw::CSTweights
     dz::Float64 = 0.0
     N1::Real = 0.5
     N2::Real = 1.0
+end
+
+function CSTGeometry(cst::CSTGeometry,cstw::CSTweights)
+    @unpack dz,N1,N2 = cst
+    CSTGeometry(cstw, dz,N1,N2)
+end
+
+function CSTGeometry(cst::CSTGeometry,dz::Float64)
+    @unpack cstw, N1,N2 = cst
+    CSTGeometry(cstw, dz,N1,N2)
 end
 
 struct AirfoilPoints
@@ -151,6 +179,12 @@ Generates a discretized airfoil shape from the given CST geometry definition.
 function airfoil_from_cst(cst::CSTGeometry, N::Int64)
     #  Create x coordinate
     x=ones(N+1)
+    return airfoil_from_cst(cst, x)
+    return  anew
+
+end
+
+function airfoil_from_cst(cst::CSTGeometry, x::Vector{Float64})
 
     #Zeta is used to have a better refinement close to trailing and leading edge
     zeta=zeros(N+1)
@@ -167,9 +201,11 @@ function airfoil_from_cst(cst::CSTGeometry, N::Int64)
 
     anew = airfoil_from_cst(cst, xu, xl)
 
-return  anew
+    return  anew
 
 end
+
+
 
 function airfoil_from_cst(airfoil_geometry::AirfoilPoints, cst::CSTGeometry)
     @unpack cstw,dz,N1,N2 = cst

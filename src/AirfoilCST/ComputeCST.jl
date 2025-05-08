@@ -67,7 +67,7 @@ Compute the error of approximation
 function compute_cst_error(w,params)
     cst,split_idx,xu,xl,y0 = params
     
-    cst.cstw = CSTweights(w,split_idx)
+    cst = CSTGeometry(cst, CSTweights(w,split_idx))
     
     ap = airfoil_from_cst(cst, xu, xl)
     
@@ -85,7 +85,7 @@ function CSTGeometry(airfoil_geometry::AirfoilPoints, cst0::CSTGeometry; maxiter
     y0 = [yu;yl]
     
     w0 = [cst0.cstw.wu;cst0.cstw.wl]
-    cst0.dz =  yu[1] - yl[end]
+    cst0 = CSTGeometry(cst0, yu[1] - yl[end])
 
     error_function = OptimizationFunction(compute_cst_error)
     split_idx = count(w0.>0)

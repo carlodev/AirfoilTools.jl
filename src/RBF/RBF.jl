@@ -2,6 +2,8 @@ module RBF
 
 using LinearAlgebra
 using Parameters
+using IterativeSolvers
+using AirfoilTools.AirfoilCST
 
 export RBFFunctionGlobalSupport
 export RBFFunctionLocalSupport
@@ -14,6 +16,12 @@ export RBF_CTPS0
 export RBF_CTPS1
 export RBF_IQB
 export RBF_GAUSS
-include("RBF_Functions")
+
+export AirfoilPoints2vv
+export vv2AirfoilPoints
+
+include("RBF_Functions.jl")
+include("RBF_Morphing.jl")
+include("RBF_Interface.jl")
 
 end

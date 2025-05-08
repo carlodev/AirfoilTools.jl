@@ -13,7 +13,13 @@ export AirfoilPoints
 export get_airfoil_coordinates
 export airfoil_from_cst
 
-include("ClassShapes.jl")
+export circle
+export NACA00
+export CST_NACA0012
+
+
+include("SpaceCST.jl")
 include("ComputeCST.jl")
+include("GeometryShapes.jl")
 
 end

@@ -1,5 +1,6 @@
 using Revise
-using AirfoilCST
+using AirfoilTools
+using AirfoilTools.AirfoilCST
 using Parameters
 using Plots, CSV, DataFrames
 using LinearAlgebra
