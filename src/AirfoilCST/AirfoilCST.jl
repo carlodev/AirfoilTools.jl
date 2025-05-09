@@ -7,9 +7,12 @@ using Optimization, OptimizationBBO
 using XLSX, CSV, DataFrames,FileIO
 using Parameters
 
+using AirfoilTools.Core
+
 export CSTweights
 export CSTGeometry
 export AirfoilPoints
+export AirfoilCSTDesign
 export get_airfoil_coordinates
 export airfoil_from_cst
 

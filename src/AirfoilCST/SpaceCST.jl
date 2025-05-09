@@ -7,7 +7,7 @@ CSTweights
     wu = CST weight of upper surface
     wl = CST weight of lower surface
 """
-struct CSTweights
+struct CSTweights <:DesignParameters
     wu::Vector{Float64}
     wl::Vector{Float64}
 end
@@ -62,20 +62,28 @@ function CSTGeometry(cst::CSTGeometry,dz::Float64)
     CSTGeometry(cstw, dz,N1,N2)
 end
 
-struct AirfoilPoints
-    xu::Vector{Float64}
-    xl::Vector{Float64}
-    yu::Vector{Float64}
-    yl::Vector{Float64}
+
+
+
+"""
+AirfoilCSTDesign
+
+it keeps togheter the CST that created a specific combination of airfoil-points.
+"""
+struct AirfoilCSTDesign
+    cstg::CSTGeometry
+    ap::AirfoilPoints
 end
 
 
-function AirfoilPoints(v::Vector)
-    return AirfoilPoints(v,v,v,v)
+function AirfoilCSTDesign( cstg::CSTGeometry, N::Int64)
+    ap = airfoil_from_cst(cstg, N)
+    AirfoilCSTDesign(cstg,ap)
 end
 
-function AirfoilPoints(xu::Vector,xl::Vector)
-    return AirfoilPoints(xu,xl,xu,xl)
+function AirfoilCSTDesign( cstg::CSTGeometry, xx::Vector{Float64})
+    ap = airfoil_from_cst(cstg, xx)
+    return AirfoilCSTDesign( cstg, ap)
 end
 
 
@@ -185,7 +193,7 @@ function airfoil_from_cst(cst::CSTGeometry, N::Int64)
 end
 
 function airfoil_from_cst(cst::CSTGeometry, x::Vector{Float64})
-
+    N = length(x)-1
     #Zeta is used to have a better refinement close to trailing and leading edge
     zeta=zeros(N+1)
     for i=1:N+1

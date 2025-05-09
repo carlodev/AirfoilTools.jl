@@ -3,11 +3,12 @@ module RBF
 using LinearAlgebra
 using Parameters
 using IterativeSolvers
-using AirfoilTools.AirfoilCST
+using AirfoilTools.Core
 
 export RBFFunctionGlobalSupport
 export RBFFunctionLocalSupport
 export MorphRBF
+export MorphRBF!
 export RBF_CP0
 export RBF_CP2
 export RBF_CP4

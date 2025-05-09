@@ -1,12 +1,24 @@
 function MorphRBF(modelgrid0::Vector, movenodes::Vector, fixnodes::Vector, displacement::Vector, RBFfun::RBFFunction; use_affine::Bool=false)
-    bnodes = [movenodes; fixnodes]
-    D, ΦM, ND = allocate_RBF_matrix(modelgrid0, bnodes, RBFfun; use_affine)
-    rhs = allocate_RBF_rhs(movenodes, bnodes, displacement, ND; use_affine)
-    Shift = solveRBF(modelgrid0, D, rhs, ΦM, ND; use_affine)
+    Shift = compute_morph_shift(modelgrid0, movenodes, fixnodes, displacement, RBFfun, use_affine)
     return modelgrid0 .+ Shift
 end
 
-function allocate_RBF_matrix(modelgrid0::Vector, bnodes::Vector, RBFfun::RBFFunction; use_affine::Bool=true)
+function MorphRBF!(modelgrid0::Vector, movenodes::Vector, fixnodes::Vector, displacement::Vector, RBFfun::RBFFunction; use_affine::Bool=false)
+    Shift = compute_morph_shift(modelgrid0, movenodes, fixnodes, displacement, RBFfun, use_affine)
+    return modelgrid0 .= modelgrid0 .+ Shift
+end
+
+
+function compute_morph_shift(modelgrid0::Vector, movenodes::Vector, fixnodes::Vector, displacement::Vector, RBFfun::RBFFunction, use_affine::Bool)
+    bnodes = [movenodes; fixnodes]
+    D, ΦM, ND = allocate_RBF_matrix(modelgrid0, bnodes, RBFfun, use_affine)
+    rhs = allocate_RBF_rhs(movenodes, bnodes, displacement, ND, use_affine)
+    Shift = solveRBF(modelgrid0, D, rhs, ΦM, ND, use_affine)
+    return Shift
+end
+
+
+function allocate_RBF_matrix(modelgrid0::Vector, bnodes::Vector, RBFfun::RBFFunction, use_affine::Bool)
     Nc = length(modelgrid0)
     Nb = length(bnodes)
     ND = length(bnodes[1])  # dimensionality (2D or 3D)
@@ -36,7 +48,7 @@ function allocate_RBF_matrix(modelgrid0::Vector, bnodes::Vector, RBFfun::RBFFunc
     return D, ΦM, ND
 end
 
-function allocate_RBF_rhs(movenodes::Vector, bnodes::Vector, displacement::Vector, ND::Int; use_affine::Bool=true)
+function allocate_RBF_rhs(movenodes::Vector, bnodes::Vector, displacement::Vector, ND::Int, use_affine::Bool)
     Nb = length(bnodes)
     Nmove = length(movenodes)
     rhs = [zeros(Nb + (use_affine ? ND + 1 : 0)) for _ in 1:ND]
@@ -48,7 +60,7 @@ function allocate_RBF_rhs(movenodes::Vector, bnodes::Vector, displacement::Vecto
     return rhs
 end
 
-function solveRBF(modelgrid0::Vector, D::Matrix{Float64}, rhs::Vector, ΦM::Matrix{Float64}, ND::Int; use_affine::Bool=true)
+function solveRBF(modelgrid0::Vector, D::Matrix{Float64}, rhs::Vector, ΦM::Matrix{Float64}, ND::Int, use_affine::Bool)
     Nc = length(modelgrid0)
     ss = zeros(Nc, ND)
     Nb = size(ΦM, 2)
