@@ -1,5 +1,5 @@
 using AirfoilTools
-using AirfoilTools.AirfoilCST
+using AirfoilTools
 using AirfoilTools.RBF
 using LinearAlgebra
 

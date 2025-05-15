@@ -6,7 +6,6 @@ using LinearAlgebra
 using Optimization, OptimizationBBO
 using XLSX, CSV, DataFrames,FileIO
 using Parameters
-
 using AirfoilTools.Core
 
 export CSTweights

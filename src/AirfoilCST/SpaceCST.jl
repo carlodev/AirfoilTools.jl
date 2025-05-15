@@ -21,6 +21,12 @@ end
 
 Base.iterate(c::CSTweights, state=(1, :upper)) = _next(c, state)
 
+function Base.length(c::CSTweights)
+    wuL = length(c.wu)
+    wlL = length(c.wl)
+    return Int(wuL+wlL)
+end
+
 function _next(c::CSTweights, (i, section))
     if section == :upper
         if i <= length(c.wu)
