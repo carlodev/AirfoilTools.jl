@@ -1,6 +1,6 @@
 module AirfoilTools
 
-include(joinpath("Core","Core.jl"))
+include(joinpath("AirfoilCore","AirfoilCore.jl"))
 
 include(joinpath("AirfoilCST","AirfoilCST.jl"))
 

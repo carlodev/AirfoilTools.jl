@@ -24,9 +24,9 @@ function  perturb_DesignParameter(rbfd::RBFDesign, ix::Vector{Int}, δx::Vector{
     
         return model_surface
     end
-    model2 = vcat([oneside_morph(surfaces, ss) for ss in unique(surfaces)]...)
+    model2 = vcat([oneside_morph(surfaces, ss) for ss in [:upper,:lower]]...)
 
-    @assert length(model0) == length(model2)
+    @assert length(model0) == length(model2) "length model0 = $(length(model0)) || length model2 = $(length(model2))"
 
     ap1 =  vv2AirfoilPoints(model2,rbfd.ap)
 

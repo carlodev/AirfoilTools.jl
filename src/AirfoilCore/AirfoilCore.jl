@@ -1,4 +1,4 @@
-module Core
+module AirfoilCore
 
 export AirfoilDesign
 export DesignParameters

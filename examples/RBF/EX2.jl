@@ -1,7 +1,10 @@
 using Revise
-using AirfoilTools.RBF
+using AirfoilTools
 using LinearAlgebra
 using Plots
+
+using AirfoilTools.RBF
+
 
 """
 In this example we are going to move one point from the top side of the airfoil.
@@ -31,7 +34,9 @@ w1[idx_change] = w1[idx_change] .+ 0.05.*rand(length(idx_change))
 
 rbfd2 = RBFDesign(rbfd, w1)
 
-perturb_DesignParameter(rbfd,1, 0.05)
+perturb_DesignParameter(rbfd, 1, 0.05)
+
+
 
 using Plots
 Plots.default(linewidth=2, aspect_ratio = 1)

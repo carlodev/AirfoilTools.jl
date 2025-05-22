@@ -33,6 +33,7 @@ include("RBF_Functions.jl")
 include("RBF_Morphing.jl")
 include("RBF_Interface.jl")
 
-include("AirfoilRBF.jl")
-include("Perturbation.jl")
+include("SpaceRBF.jl")
+include("PerturbationRBF.jl")
+
 end
