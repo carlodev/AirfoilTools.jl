@@ -1,57 +1,42 @@
-using AirfoilTools
-using AirfoilTools
+using Revise
 using AirfoilTools.RBF
 using LinearAlgebra
+using Plots
 
 """
-In this example we provide a circular deformation of the airfoil
+In this example we are going to move one point from the top side of the airfoil.
+We are fixing the points on the bottom side of the airfoil.
 """
 
-
-fname = "DU89.csv" #"n0012.csv"
+fname = "DU89.csv" #airfoil coordinates to load
 
 ap0 = get_airfoil_coordinates(joinpath(@__DIR__, "..", fname))
 
-model0 =  AirfoilPoints2vv(ap0)
+control_px = collect(LinRange(0.01,0.99, 10))
 
-movenodes= model0[1:length(model0)] #coordinates of the node to move. It does not have to live on the airfoil
-fixnodes = model0[[]] #fix node at the bottom side
-
-RBFfun = RBFFunctionLocalSupport(RBF_CP4, 1.0)
+control_points = ControlPoints(control_px,control_px)
 
 
-## Circular displacement
-chord = 1.0
-r = chord/2
-δ = 0.005
+R = 0.25 #support radius. If is bigger, the deformation radius increases, try increasing it
+RBFfun = RBFFunctionLocalSupport(RBF_CP4, R)
 
-"""
-Circular deformation
-"""
-function circ(p)
-    x,y = p
-    # y>0 ? s = 1 : s=-1 
-    δy= δ/r .*  sqrt(r^2 - (x-r)^2)
-    return [0,δy]
-end
-circ_displ = [circ(p) for p in movenodes]
+rbfg = RBFGeometry(control_points,RBFfun)
+rbfd = RBFDesign(rbfg, ap0)
 
+w0 = get_DesignParameters(rbfd)
 
-model1 = MorphRBF(model0, movenodes, fixnodes, circ_displ, RBFfun;use_affine=false)
+w1 = copy(w0)
+idx_change = [2,3,4,6,15]
+w1[idx_change] = w1[idx_change] .+ 0.05.*rand(length(idx_change))
 
-ap1 =  vv2AirfoilPoints(model1,ap0)
+rbfd2 = RBFDesign(rbfd, w1)
 
-
+perturb_DesignParameter(rbfd,1, 0.05)
 
 using Plots
-Plots.default(linewidth=2)
-# plotly()
-plot(ap0.xu, ap0.yu, label="original", linecolor=:black, aspect_ratio = 1)
-plot!(ap0.xl, ap0.yl, label=false, linecolor=:black)
+Plots.default(linewidth=2, aspect_ratio = 1)
 
-plot!(ap1.xu, ap1.yu, label="Morph Deformation",linecolor=:red)
-plot!(ap1.xl, ap1.yl, label=false, linecolor=:red)
-
-
-
-
+plot(rbfd.ap.xu,rbfd.ap.yu,linecolor=:black)
+plot!(rbfd.ap.xl,rbfd.ap.yl,linecolor=:black)
+plot!(rbfd2.ap.xu,rbfd2.ap.yu,linecolor=:red)
+plot!(rbfd2.ap.xl,rbfd2.ap.yl,linecolor=:red)

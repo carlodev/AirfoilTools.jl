@@ -4,8 +4,10 @@ authors = ["carlo"]
 version = "1.0.0-DEV"
 
 [deps]
+BSplineKit = "093aae92-e908-43d7-9660-e50ee39d5a0a"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dierckx = "39dd38d3-220a-591b-8e3c-4c3a8c710a94"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 IterativeSolvers = "42fd0dbc-a981-5370-80f2-aaf504508153"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -17,8 +19,10 @@ Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
 
 [compat]
+BSplineKit = "0.19.0"
 CSV = "0.10.15"
 DataFrames = "1.7.0"
+Dierckx = "0.5.4"
 FileIO = "1.17.0"
 IterativeSolvers = "0.9.4"
 LinearAlgebra = "1.11.0"

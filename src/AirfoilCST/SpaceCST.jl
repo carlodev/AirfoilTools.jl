@@ -21,6 +21,7 @@ end
 
 Base.iterate(c::CSTweights, state=(1, :upper)) = _next(c, state)
 
+Base.vcat(c::CSTweights) = [c.wu...;c.wl...]
 function Base.length(c::CSTweights)
     wuL = length(c.wu)
     wlL = length(c.wl)
@@ -76,13 +77,15 @@ AirfoilCSTDesign
 
 it keeps togheter the CST that created a specific combination of airfoil-points.
 """
-struct AirfoilCSTDesign
+struct AirfoilCSTDesign<:AirfoilDesign
     cstg::CSTGeometry
     ap::AirfoilPoints
 end
 
 
 function AirfoilCSTDesign( cstg::CSTGeometry, N::Int64)
+    @assert iseven(N) "The number of points must be even"
+
     ap = airfoil_from_cst(cstg, N)
     AirfoilCSTDesign(cstg,ap)
 end

@@ -1,12 +1,18 @@
 module Core
 
+export AirfoilDesign
 export DesignParameters
 export AirfoilPoints
 
+export get_DesignParameters
 
+abstract type AirfoilDesign end
 abstract type DesignParameters end
 
 
+function get_DesignParameters(x)
+    error("No method defined for object of type $(typeof(x))")
+end
 
 
 struct AirfoilPoints

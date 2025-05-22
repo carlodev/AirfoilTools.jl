@@ -19,9 +19,12 @@ export circle
 export NACA00
 export CST_NACA0012
 
+export perturb_DesignParameter
+export get_DesignParameters
 
 include("SpaceCST.jl")
 include("ComputeCST.jl")
 include("GeometryShapes.jl")
+include("Perturbation.jl")
 
 end
